@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teste Socket.IO</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Teste Socket.IO</h1>
+  <script>
+    var socket = io('http://localhost:8080');
+    socket.on('connect', () => console.log('Conectado!'));
+    socket.on('connect_error', (err) => console.error('Erro conexão:', err));
+  </script>
+</body>
+</html>

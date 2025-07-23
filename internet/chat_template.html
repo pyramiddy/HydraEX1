@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Anônimo 🔒</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #18191a;
+            color: white;
+        }
+        .chat-box {
+            height: 70vh;
+            overflow-y: auto;
+            background: #242526;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .chat-input {
+            background: #3a3b3c;
+            color: white;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .user {
+            font-weight: bold;
+        }
+        .system {
+            color: #aaa;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="container py-4">
+    <h2>💬 Chat Anônimo Intranet</h2>
+    <div id="chat" class="chat-box mb-3"></div>
+
+    <form id="chat-form" class="input-group">
+        <input type="text" id="message" class="form-control chat-input" placeholder="Digite sua mensagem..." autocomplete="off">
+        <button class="btn btn-success" type="submit">Enviar</button>
+    </form>
+
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        const chat = document.getElementById("chat");
+        const form = document.getElementById("chat-form");
+        const input = document.getElementById("message");
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            if (input.value.trim() !== "") {
+                socket.emit("mensagem", input.value);
+                input.value = "";
+            }
+        });
+
+        socket.on("mensagem", data => {
+            const div = document.createElement("div");
+            div.classList.add("message");
+            div.innerHTML = `<span class="user">${data.usuario}:</span> ${data.msg}`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        });
+
+        socket.on("sistema", msg => {
+            const div = document.createElement("div");
+            div.classList.add("message", "system");
+            div.textContent = msg;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        });
+    </script>
+</body>
+</html>
